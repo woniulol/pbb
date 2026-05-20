@@ -1,0 +1,27 @@
+{
+    "name": "pbb",
+    "version": "0.1.0",
+    "description": "A Pi package for Bitbucket workflows.",
+    "keywords": [
+        "pi-package"
+    ],
+    "pi": {
+        "extensions": [
+            "./extensions"
+        ]
+    },
+    "author": "",
+    "license": "ISC",
+    "private": true,
+    "type": "module",
+    "peerDependencies": {
+        "@earendil-works/pi-coding-agent": "*",
+        "typebox": "*"
+    },
+    "devDependencies": {
+        "@earendil-works/pi-coding-agent": "*",
+        "@types/node": "^25.9.1",
+        "typebox": "*",
+        "typescript": "^6.0.0"
+    }
+}
