@@ -1,15 +1,14 @@
 import type { ExtensionCommandContext } from "@earendil-works/pi-coding-agent";
-import { getBitbucketAuthConfig } from "./auth.js";
-import { getBitbucketRepoInfoFromGit } from "./repository.js";
 import { checkBitbucketRepositoryAccess } from "./bitbucket.js";
+import { getBitbucketContext, hasCompleteBitbucketContext } from "./context.js";
 import { STATUS_ICON } from "./ui.js";
 
 export async function handlePbbStatusCommand(
     ctx: ExtensionCommandContext,
 ): Promise<void> {
-    const authConfig = getBitbucketAuthConfig();
-    const repoInfo = await getBitbucketRepoInfoFromGit();
-    const lines = ["pbb status:\n"];
+    const context = await getBitbucketContext();
+    const { authConfig, repoInfo } = context;
+    const lines = ["pbb status:", ""];
 
     lines.push(
         `${authConfig ? STATUS_ICON.ok : STATUS_ICON.missing} auth ${authConfig ? "configured" : "incomplete"}`,
@@ -21,7 +20,7 @@ export async function handlePbbStatusCommand(
             : `${STATUS_ICON.missing} repo not detected`,
     );
 
-    if (!authConfig || !repoInfo) {
+    if (!hasCompleteBitbucketContext(context)) {
         lines.push(`${STATUS_ICON.missing} Bitbucket API access not checked`);
         ctx.ui.notify(lines.join("\n"), "warning");
         return;
@@ -32,7 +31,7 @@ export async function handlePbbStatusCommand(
     const renderLoading = () => {
         ctx.ui.setWidget("pbb-status", [
             ...lines,
-            `${spinnerFrames[frame % spinnerFrames.length]} checking Bitbucket API access...\n`,
+            `${spinnerFrames[frame % spinnerFrames.length]} checking Bitbucket API access...`,
         ]);
         frame += 1;
     };
@@ -41,16 +40,20 @@ export async function handlePbbStatusCommand(
     const interval = setInterval(renderLoading, 100);
 
     try {
-        const accessCheck = await checkBitbucketRepositoryAccess(authConfig, repoInfo);
+        const accessCheck = await checkBitbucketRepositoryAccess(
+            context.authConfig,
+            context.repoInfo,
+        );
         clearInterval(interval);
         const finalLines = [
             ...lines,
             `${accessCheck.ok ? STATUS_ICON.ok : STATUS_ICON.missing} ${accessCheck.message}`,
         ];
-        ctx.ui.notify(finalLines.join("\n"), accessCheck.ok ? "info" : "warning");
         ctx.ui.setWidget("pbb-status", undefined);
+        ctx.ui.notify(finalLines.join("\n"), accessCheck.ok ? "info" : "warning");
     } catch (error) {
         clearInterval(interval);
+        ctx.ui.setWidget("pbb-status", undefined);
         throw error;
     }
 }
