@@ -31,13 +31,13 @@
         // "noPropertyAccessFromIndexSignature": true,
         // Recommended Options
         "strict": true,
-        "noEmit": true
+        "noEmit": true,
         // "jsx": "react-jsx",
         // "verbatimModuleSyntax": true,
         // "isolatedModules": true,
         // "noUncheckedSideEffectImports": true,
         // "moduleDetection": "force",
-        // "skipLibCheck": true
+        "skipLibCheck": true
     },
     "include": [
         "extensions/**/*.ts"
