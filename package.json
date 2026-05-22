@@ -15,7 +15,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "test": "vitest"
+        "test": "vitest",
+        "generate:bitbucket-types": "openapi-typescript openapi/bitbucket.json -o extensions/generated/bitbucket-types.ts"
     },
     "peerDependencies": {
         "@earendil-works/pi-coding-agent": "*",
@@ -26,9 +27,13 @@
         "@earendil-works/pi-coding-agent": "*",
         "@earendil-works/pi-tui": "^0.75.4",
         "@types/node": "^25.9.1",
+        "openapi-typescript": "^7.13.0",
         "tsx": "^4.22.3",
         "typebox": "*",
         "typescript": "^6.0.0",
         "vitest": "^4.1.7"
+    },
+    "dependencies": {
+        "openapi-fetch": "^0.17.0"
     }
 }

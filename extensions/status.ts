@@ -1,7 +1,7 @@
 import type { ExtensionCommandContext } from "@earendil-works/pi-coding-agent";
 import { checkBitbucketRepositoryAccess } from "./bitbucket.js";
 import { getBitbucketContext, hasCompleteBitbucketContext } from "./context.js";
-import { STATUS_ICON } from "./ui.js";
+import { runWithSpinner, STATUS_ICON } from "./ui.js";
 
 export async function handlePbbStatusCommand(
     ctx: ExtensionCommandContext,
@@ -26,34 +26,17 @@ export async function handlePbbStatusCommand(
         return;
     }
 
-    const spinnerFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
-    let frame = 0;
-    const renderLoading = () => {
-        ctx.ui.setWidget("pbb-status", [
-            ...lines,
-            `${spinnerFrames[frame % spinnerFrames.length]} checking Bitbucket API access...`,
-        ]);
-        frame += 1;
-    };
-    renderLoading();
+    const accessCheck = await runWithSpinner(
+        ctx,
+        "pbb-status",
+        lines,
+        "checking Bitbucket API access...",
+        () => checkBitbucketRepositoryAccess(context.authConfig, context.repoInfo),
+    );
 
-    const interval = setInterval(renderLoading, 100);
-
-    try {
-        const accessCheck = await checkBitbucketRepositoryAccess(
-            context.authConfig,
-            context.repoInfo,
-        );
-        clearInterval(interval);
-        const finalLines = [
-            ...lines,
-            `${accessCheck.ok ? STATUS_ICON.ok : STATUS_ICON.missing} ${accessCheck.message}`,
-        ];
-        ctx.ui.setWidget("pbb-status", undefined);
-        ctx.ui.notify(finalLines.join("\n"), accessCheck.ok ? "info" : "warning");
-    } catch (error) {
-        clearInterval(interval);
-        ctx.ui.setWidget("pbb-status", undefined);
-        throw error;
-    }
+    const finalLines = [
+        ...lines,
+        `${accessCheck.ok ? STATUS_ICON.ok : STATUS_ICON.missing} ${accessCheck.message}`,
+    ];
+    ctx.ui.notify(finalLines.join("\n"), accessCheck.ok ? "info" : "warning");
 }
