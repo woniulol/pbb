@@ -6,7 +6,7 @@ import type { BitbucketAuthConfig } from "./auth.js";
 export type PbbResult<T> =
     | {
           ok: true;
-          status: number;
+          status?: number;
           data: T;
       }
     | {

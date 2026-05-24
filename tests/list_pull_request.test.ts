@@ -108,7 +108,7 @@ describe("listBitbucketPullRequests", () => {
         ).resolves.toEqual({
             ok: false,
             status: 404,
-            message: "Failed to list pull requests: HTTP 404",
+            message: "Failed to list Bitbucket pull requests: HTTP 404 - not found",
         });
     });
 

@@ -3,6 +3,7 @@ import type { PbbResult } from "../client.js";
 import type { BitbucketAuthConfig } from "../auth.js";
 import type { components } from "../generated/bitbucket-types.js";
 import type { BitbucketRepoInfo } from "../repository.js";
+import { runBitbucketRequest } from "./request.js";
 
 export const BITBUCKET_PULL_REQUEST_STATES = [
     "OPEN",
@@ -21,11 +22,9 @@ export async function listBitbucketPullRequests(
     state?: BitbucketPullRequestState,
 ): Promise<PbbResult<BitbucketPullRequestsPage>> {
     const client = createBitbucketClient(authConfig);
-
-    try {
-        const { data, response } = await client.GET(
-            "/repositories/{workspace}/{repo_slug}/pullrequests",
-            {
+    return runBitbucketRequest(
+        () =>
+            client.GET("/repositories/{workspace}/{repo_slug}/pullrequests", {
                 params: {
                     path: {
                         workspace: repoInfo.workspace,
@@ -33,29 +32,7 @@ export async function listBitbucketPullRequests(
                     },
                     ...(state ? { query: { state } } : {}),
                 },
-            },
-        );
-
-        if (!response.ok || !data) {
-            return {
-                ok: false,
-                status: response.status,
-                message: `Failed to list pull requests: HTTP ${response.status}`,
-            };
-        }
-
-        return {
-            ok: true,
-            status: response.status,
-            data,
-        };
-    } catch (error) {
-        return {
-            ok: false,
-            message:
-                error instanceof Error
-                    ? `Network error: ${error.message}`
-                    : "Network error: failed to connect to Bitbucket",
-        };
-    }
+            }),
+        "Failed to list Bitbucket pull requests",
+    );
 }

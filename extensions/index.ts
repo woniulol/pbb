@@ -4,7 +4,7 @@ import { handlePbbAuthCommand } from "./auth.js";
 import { handlePbbPrCommand } from "./pr.js";
 import { BITBUCKET_PULL_REQUEST_STATES } from "./services/list_pull_request.js";
 import { handlePbbStatusCommand } from "./status.js";
-import registerPbbTools from "./tools.js";
+import registerPbbTools from "./tools/index.js";
 
 const PBB_SUBCOMMANDS: AutocompleteItem[] = [
     {
