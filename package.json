@@ -8,6 +8,9 @@
     "pi": {
         "extensions": [
             "./extensions"
+        ],
+        "skills": [
+            "./skills"
         ]
     },
     "author": "",
