@@ -4,6 +4,7 @@ import type { BitbucketRepoInfo } from "../extensions/repository.js";
 import { listBitbucketPullRequests } from "../extensions/services/list_pull_request.js";
 
 const authConfig: BitbucketAuthConfig = {
+    user: "test-user",
     accessToken: "test-token",
     apiBaseUrl: "https://api.bitbucket.org/2.0",
 };

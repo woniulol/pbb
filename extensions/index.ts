@@ -87,6 +87,7 @@ pbb commands:
     /pbb status         check Bitbucket configuration
 
 environment:
+   PBB_BITBUCKET_USER             required
    PBB_BITBUCKET_ACCESS_TOKEN     required
    PBB_BITBUCKET_API_BASE_URL     optional, defaults to https://api.bitbucket.org/2.0`,
 

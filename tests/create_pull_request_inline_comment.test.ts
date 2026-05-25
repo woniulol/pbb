@@ -11,6 +11,7 @@ vi.mock("node:child_process", () => ({
 import { createBitbucketPullRequestInlineComment } from "../extensions/services/create_pull_request_inline_comment.js";
 
 const authConfig: BitbucketAuthConfig = {
+    user: "test-user",
     accessToken: "test-token",
     apiBaseUrl: "https://api.bitbucket.org/2.0",
 };

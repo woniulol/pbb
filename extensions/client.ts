@@ -1,7 +1,10 @@
 import createClient from "openapi-fetch";
 import type { Client } from "openapi-fetch";
 import type { paths } from "./generated/bitbucket-types.js";
-import type { BitbucketAuthConfig } from "./auth.js";
+import {
+    getBitbucketBasicAuthHeader,
+    type BitbucketAuthConfig,
+} from "./auth.js";
 
 export type PbbResult<T> =
     | {
@@ -18,11 +21,11 @@ export type PbbResult<T> =
 export default function createBitbucketClient(
     authConfig: BitbucketAuthConfig,
 ): Client<paths> {
-    const { accessToken, apiBaseUrl } = authConfig;
+    const { apiBaseUrl } = authConfig;
     return createClient<paths>({
         baseUrl: apiBaseUrl,
         headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: getBitbucketBasicAuthHeader(authConfig),
             Accept: "application/json",
         },
     });

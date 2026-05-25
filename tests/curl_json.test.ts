@@ -42,14 +42,16 @@ describe("curlJson", () => {
         });
     });
 
-    test("passes JSON headers and stringifies request body", async () => {
+    test("passes JSON headers, basic auth, and stringifies request body", async () => {
         mockCurlStdout('{"ok":true}\n__PI_CURL_HTTP_STATUS__:201');
 
         await curlJson<{ ok: boolean }>({
             method: "POST",
             url: "https://example.com/items",
-            headers: {
-                Authorization: "Bearer token",
+            auth: {
+                type: "basic",
+                username: "test-user",
+                password: "test-token",
             },
             body: {
                 title: "hello",
@@ -65,8 +67,8 @@ describe("curlJson", () => {
                 "POST",
                 "--header",
                 "Accept: application/json",
-                "--header",
-                "Authorization: Bearer token",
+                "--user",
+                "test-user:test-token",
                 "--header",
                 "Content-Type: application/json",
                 "--data",

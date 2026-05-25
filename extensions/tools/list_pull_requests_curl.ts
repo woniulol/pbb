@@ -187,8 +187,10 @@ export const listBitbucketPullRequestsCurlTool = defineTool<
                 await curlJson<PullRequestPage>({
                     method: "GET",
                     url: nextUrl,
-                    headers: {
-                        Authorization: `Bearer ${authConfig.accessToken}`,
+                    auth: {
+                        type: "basic",
+                        username: authConfig.user,
+                        password: authConfig.accessToken,
                     },
                 });
 

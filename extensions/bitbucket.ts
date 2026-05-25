@@ -1,4 +1,7 @@
-import type { BitbucketAuthConfig } from "./auth.js";
+import {
+    getBitbucketBasicAuthHeader,
+    type BitbucketAuthConfig,
+} from "./auth.js";
 import type { BitbucketRepoInfo } from "./repository.js";
 
 export interface BitbucketRepoAccessResult {
@@ -17,14 +20,14 @@ export async function checkBitbucketRepositoryAccess(
     authConfig: BitbucketAuthConfig,
     repoInfo: BitbucketRepoInfo,
 ): Promise<BitbucketRepoAccessResult> {
-    const { accessToken, apiBaseUrl } = authConfig;
+    const { apiBaseUrl } = authConfig;
     const { workspace, repoSlug } = repoInfo;
     const url = `${apiBaseUrl}/repositories/${workspace}/${repoSlug}`;
     try {
         const respond = await fetch(url, {
             method: "GET",
             headers: {
-                Authorization: `Bearer ${accessToken}`,
+                Authorization: getBitbucketBasicAuthHeader(authConfig),
                 Accept: "application/json",
             },
         });

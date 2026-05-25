@@ -7,10 +7,17 @@ const HTTP_STATUS_MARKER = "__PI_CURL_HTTP_STATUS__:";
 
 export type CurlJsonMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
+export type CurlJsonBasicAuth = {
+    type: "basic";
+    username: string;
+    password: string;
+};
+
 export type CurlJsonOptions = {
     method: CurlJsonMethod;
     url: string;
     headers?: Record<string, string>;
+    auth?: CurlJsonBasicAuth;
     body?: unknown;
     maxBuffer?: number;
 };
@@ -110,6 +117,10 @@ function buildCurlArgs(options: CurlJsonOptions): string[] {
 
     for (const [name, value] of Object.entries(options.headers ?? {})) {
         args.push("--header", `${name}: ${value}`);
+    }
+
+    if (options.auth?.type === "basic") {
+        args.push("--user", `${options.auth.username}:${options.auth.password}`);
     }
 
     if (options.body !== undefined) {

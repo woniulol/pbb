@@ -4,8 +4,8 @@ import type { BitbucketAuthConfig } from "../extensions/auth.js";
 import type { BitbucketRepoInfo } from "../extensions/repository.js";
 
 const authConfig: BitbucketAuthConfig = {
+    user: "test-user",
     accessToken: "test-token",
-    workspace: "team",
     apiBaseUrl: "https://api.bitbucket.org/2.0",
 };
 
@@ -40,7 +40,7 @@ describe("checkBitbucketRepositoryAccess", () => {
             {
                 method: "GET",
                 headers: {
-                    Authorization: "Bearer test-token",
+                    Authorization: "Basic dGVzdC11c2VyOnRlc3QtdG9rZW4=",
                     Accept: "application/json",
                 },
             },

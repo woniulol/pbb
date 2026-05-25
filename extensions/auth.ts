@@ -5,6 +5,7 @@ import { STATUS_ICON } from "./ui.js";
 const ENV_PREFIX = "PBB_BITBUCKET";
 
 export interface BitbucketAuthConfig {
+    user: string;
     accessToken: string;
     apiBaseUrl: string;
 }
@@ -13,6 +14,7 @@ type BitbucketAuthStatusFields = Record<keyof BitbucketAuthConfig, boolean>;
 type BitbucketAuthEnvFields = Record<keyof BitbucketAuthConfig, string>;
 
 const BITBUCKET_ENV: BitbucketAuthEnvFields = {
+    user: `${ENV_PREFIX}_USER`,
     accessToken: `${ENV_PREFIX}_ACCESS_TOKEN`,
     apiBaseUrl: `${ENV_PREFIX}_API_BASE_URL`,
 };
@@ -21,6 +23,13 @@ const DEFAULT_BITBUCKET_API_BASE_URL = "https://api.bitbucket.org/2.0";
 export type BitbucketAuthStatus = BitbucketAuthStatusFields & {
     isReady: boolean;
 };
+
+export function getBitbucketBasicAuthHeader(authConfig: BitbucketAuthConfig): string {
+    const credentials = Buffer.from(
+        `${authConfig.user}:${authConfig.accessToken}`,
+    ).toString("base64");
+    return `Basic ${credentials}`;
+}
 
 export function getBitbucketAuthConfig(): BitbucketAuthConfig | undefined {
     const config = {} as BitbucketAuthConfig;

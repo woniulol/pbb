@@ -63,8 +63,10 @@ export const getBitbucketPullRequestCurlTool = defineTool<
         const result = await curlJson<BitbucketPullRequestResponse>({
             method: "GET",
             url,
-            headers: {
-                Authorization: `Bearer ${authConfig.accessToken}`,
+            auth: {
+                type: "basic",
+                username: authConfig.user,
+                password: authConfig.accessToken,
             },
         });
 

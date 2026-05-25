@@ -112,8 +112,10 @@ export const createBitbucketPullRequestInlineCommentCurlTool = defineTool<
         const result = await curlJson<BitbucketCommentResponse>({
             method: "POST",
             url,
-            headers: {
-                Authorization: `Bearer ${authConfig.accessToken}`,
+            auth: {
+                type: "basic",
+                username: authConfig.user,
+                password: authConfig.accessToken,
             },
             body: {
                 content: { raw: body },
